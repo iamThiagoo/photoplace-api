@@ -5,7 +5,7 @@ import { AuthResetPasswordDTO } from './dto/auth-reset-password.dto';
 export declare class AuthController {
     private readonly authService;
     constructor(authService: AuthService);
-    login({ email, password }: AuthDTO): Promise<void>;
-    create({ name, email, password }: AuthCreateDTO): Promise<void>;
+    login({ email, password }: AuthDTO): Promise<string>;
+    create(authCreateDTO: AuthCreateDTO): Promise<string>;
     resetPassword({ email }: AuthResetPasswordDTO): Promise<void>;
 }

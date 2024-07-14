@@ -16,21 +16,16 @@ const app_service_1 = require("./app.service");
 const typeorm_1 = require("@nestjs/typeorm");
 const config_1 = require("@nestjs/config");
 const auth_module_1 = require("./auth/auth.module");
+const user_entity_1 = require("./user/entity/user.entity");
 let AppModule = class AppModule {
-    constructor() {
-        console.log(process.env.DB_USERNAME);
-        console.log(process.env.DB_HOST);
-        console.log(process.env.DB_PORT);
-        console.log(process.env.DB_PASSWORD);
-        console.log(process.env.DB_NAME);
-    }
+    constructor() { }
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             config_1.ConfigModule.forRoot({
-                isGlobal: true,
+                isGlobal: true
             }),
             typeorm_1.TypeOrmModule.forRoot({
                 type: 'mysql',
@@ -39,8 +34,8 @@ exports.AppModule = AppModule = __decorate([
                 username: process.env.DB_USERNAME,
                 password: process.env.DB_PASSWORD,
                 database: process.env.DB_NAME,
-                entities: [],
-                synchronize: process.env.ENV == 'development',
+                entities: [user_entity_1.UserEntity],
+                synchronize: process.env.ENV == 'development'
             }),
             auth_module_1.AuthModule
         ],

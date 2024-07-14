@@ -25,7 +25,8 @@ let AuthController = class AuthController {
     async login({ email, password }) {
         return this.authService.login(email, password);
     }
-    async create({ name, email, password }) {
+    async create(authCreateDTO) {
+        const { name, email, password } = authCreateDTO;
         return this.authService.create(name, email, password);
     }
     async resetPassword({ email }) {

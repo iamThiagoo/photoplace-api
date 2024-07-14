@@ -27,17 +27,17 @@ export class Migrate1720916453990 implements MigrationInterface {
                     },
                     {
                         name: 'created_at',
-                        type: 'timestamptz',
-                        default: 'now()',
+                        type: 'timestamp',
+                        default: 'CURRENT_TIMESTAMP',
                     },
                     {
                         name: 'updated_at',
-                        type: 'timestamptz',
-                        default: 'now()',
+                        type: 'timestamp',
+                        default: 'CURRENT_TIMESTAMP',
                     },
                     {
                         name: 'deleted_at',
-                        type: 'timestamptz',
+                        type: 'timestamp',
                         isNullable: true,
                     },
                 ],

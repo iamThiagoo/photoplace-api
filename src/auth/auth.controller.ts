@@ -10,11 +10,12 @@ export class AuthController {
 
     @Post()
     async login(@Body() { email, password }: AuthDTO) {
-        return this.authService.login(email, password);
+      return this.authService.login(email, password);
     }
 
     @Post('create')
-    async create(@Body() { name, email, password }: AuthCreateDTO) {
+    async create(@Body() authCreateDTO : AuthCreateDTO) {
+        const { name, email, password } = authCreateDTO;
         return this.authService.create(name, email, password);
     }
 
