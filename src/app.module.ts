@@ -4,11 +4,12 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { UserEntity } from './user/entity/user.entity';
 
 @Module({
     imports: [
         ConfigModule.forRoot({
-            isGlobal: true // Torna as variáveis de ambiente acessíveis globalmente
+            isGlobal: true
         }),
         TypeOrmModule.forRoot({
             type: 'mysql',
@@ -17,7 +18,7 @@ import { AuthModule } from './auth/auth.module';
             username: process.env.DB_USERNAME,
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME,
-            entities: [],
+            entities: [UserEntity],
             synchronize: process.env.ENV == 'development'
         }),
         AuthModule
@@ -26,11 +27,5 @@ import { AuthModule } from './auth/auth.module';
     providers: [AppService]
 })
 export class AppModule {
-    constructor() {
-        console.log(process.env.DB_USERNAME);
-        console.log(process.env.DB_HOST);
-        console.log(process.env.DB_PORT);
-        console.log(process.env.DB_PASSWORD);
-        console.log(process.env.DB_NAME);
-    }
+    constructor() {}
 }
