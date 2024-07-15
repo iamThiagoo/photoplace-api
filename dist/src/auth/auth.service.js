@@ -19,15 +19,17 @@ const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("../user/entity/user.entity");
 const typeorm_2 = require("typeorm");
 const bcrypt = require("bcrypt");
+const mailer_1 = require("@nestjs-modules/mailer");
 let AuthService = class AuthService {
-    constructor(jwtService, usersRepository) {
+    constructor(jwtService, mailerService, usersRepository) {
         this.jwtService = jwtService;
+        this.mailerService = mailerService;
         this.usersRepository = usersRepository;
     }
     async login(email, password) {
         const user = await this.usersRepository.findOneBy({ email });
         if (!user || !(await bcrypt.compare(password, user.password))) {
-            throw new common_1.UnauthorizedException("E-mail ou Senha incorretos!");
+            throw new common_1.UnauthorizedException("E-mail ou Senha inválidos!");
         }
         return this.createToken(user);
     }
@@ -40,7 +42,52 @@ let AuthService = class AuthService {
         await this.usersRepository.save(user);
         return this.createToken(user);
     }
-    async resetPassword(email) { }
+    async sendEmailToResetPassword(email) {
+        const user = await this.usersRepository.findOneBy({ email });
+        if (!user) {
+            return { success: true };
+        }
+        const token = this.jwtService.sign({
+            sub: user.uuid,
+            uuid: user.uuid,
+        }, {
+            expiresIn: String(process.env.RESET_PASSWORD_EXPIRES_IN),
+            issuer: `${process.env.PROJECT_NAME} - Reset Password`,
+            audience: "users"
+        });
+        await this.mailerService.sendMail({
+            subject: "Recuperação de Senha",
+            to: user.email,
+            template: "resetPassword",
+            context: {
+                name: user.name,
+                urlToReset: process.env.APP_FRONTEND_URL + '/reset/' + token
+            }
+        });
+        return {
+            success: true
+        };
+    }
+    async resetPassword(token, newPassword) {
+        try {
+            const data = this.jwtService.verify(token, {
+                issuer: `${process.env.PROJECT_NAME} - Reset Password`,
+                audience: 'users',
+            });
+            if (!data.uuid) {
+                throw new common_1.BadRequestException('Ocorreu um problema ao salvar a sua nova senha!');
+            }
+            let password = await bcrypt.hash(newPassword, await bcrypt.genSalt());
+            await this.usersRepository.update(data.uuid, {
+                password,
+            });
+            const user = await this.usersRepository.findOneBy({ uuid: data.uuid });
+            return this.createToken(user);
+        }
+        catch (e) {
+            throw new common_1.BadRequestException(e);
+        }
+    }
     async createToken(user) {
         return this.jwtService.sign({
             sub: user.uuid,
@@ -67,8 +114,9 @@ let AuthService = class AuthService {
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
-    __param(1, (0, typeorm_1.InjectRepository)(user_entity_1.UserEntity)),
+    __param(2, (0, typeorm_1.InjectRepository)(user_entity_1.UserEntity)),
     __metadata("design:paramtypes", [jwt_1.JwtService,
+        mailer_1.MailerService,
         typeorm_2.Repository])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

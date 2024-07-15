@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class AuthService {
@@ -16,6 +17,7 @@ export class AuthService {
      */
     constructor(
         private readonly jwtService : JwtService,
+        private readonly mailerService: MailerService,
         @InjectRepository(UserEntity) private usersRepository: Repository<UserEntity>
     ) {}
 
@@ -30,7 +32,7 @@ export class AuthService {
         const user = await this.usersRepository.findOneBy({email});
 
         if (!user || !(await bcrypt.compare(password, user.password))) {
-            throw new UnauthorizedException("E-mail ou Senha incorretos!")
+            throw new UnauthorizedException("E-mail ou Senha inválidos!")
         }
 
         return this.createToken(user);
@@ -62,7 +64,67 @@ export class AuthService {
      * 
      * @param email 
      */
-    async resetPassword(email: string) {}
+    async sendEmailToResetPassword(email: string) {
+
+        const user = await this.usersRepository.findOneBy({email});
+
+        if (!user) {
+            return { success: true };
+        }
+
+        const token = this.jwtService.sign({
+            sub: user.uuid,
+            uuid: user.uuid,
+        }, {
+            expiresIn: String(process.env.RESET_PASSWORD_EXPIRES_IN),
+            issuer: `${process.env.PROJECT_NAME} - Reset Password`,
+            audience: "users"
+        });
+
+        await this.mailerService.sendMail({
+            subject: "Recuperação de Senha",
+            to: user.email,
+            template: "resetPassword",
+            context: {
+                name: user.name,
+                urlToReset: process.env.APP_FRONTEND_URL + '/reset/' + token
+            }
+        });
+
+        return {
+            success: true 
+        };
+    }
+
+
+    /**
+     * 
+     * @param email 
+     * @returns 
+     */
+    async resetPassword(token: string, newPassword: string) {
+        try {
+            const data: any = this.jwtService.verify(token, {
+              issuer: `${process.env.PROJECT_NAME} - Reset Password`,
+              audience: 'users',
+            });
+      
+            if (!data.uuid) {
+                throw new BadRequestException('Ocorreu um problema ao salvar a sua nova senha!');
+            }
+      
+            let password = await bcrypt.hash(newPassword, await bcrypt.genSalt());
+            await this.usersRepository.update(data.uuid, {
+                password,
+            });
+      
+            const user = await this.usersRepository.findOneBy({uuid: data.uuid});
+            return this.createToken(user);
+            
+        } catch (e) {
+            throw new BadRequestException(e);
+        }
+    }
 
 
     /**

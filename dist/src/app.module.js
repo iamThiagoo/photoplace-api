@@ -17,6 +17,8 @@ const typeorm_1 = require("@nestjs/typeorm");
 const config_1 = require("@nestjs/config");
 const auth_module_1 = require("./auth/auth.module");
 const user_entity_1 = require("./user/entity/user.entity");
+const mailer_1 = require("@nestjs-modules/mailer");
+const pug_adapter_1 = require("@nestjs-modules/mailer/dist/adapters/pug.adapter");
 let AppModule = class AppModule {
     constructor() { }
 };
@@ -36,6 +38,26 @@ exports.AppModule = AppModule = __decorate([
                 database: process.env.DB_NAME,
                 entities: [user_entity_1.UserEntity],
                 synchronize: process.env.ENV == 'development'
+            }),
+            mailer_1.MailerModule.forRoot({
+                transport: {
+                    host: process.env.SMTP_DOMAIN,
+                    port: Number(process.env.SMTP_PORT),
+                    auth: {
+                        user: process.env.SMTP_USER,
+                        pass: process.env.SMTP_PASSWORD
+                    }
+                },
+                defaults: {
+                    from: `${process.env.APP_NAME} - ${process.env.SMTP_USER}`,
+                },
+                template: {
+                    dir: __dirname + '/templates',
+                    adapter: new pug_adapter_1.PugAdapter(),
+                    options: {
+                        strict: true,
+                    },
+                },
             }),
             auth_module_1.AuthModule
         ],

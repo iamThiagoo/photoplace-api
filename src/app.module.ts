@@ -5,6 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { UserEntity } from './user/entity/user.entity';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 
 @Module({
     imports: [
@@ -20,6 +22,26 @@ import { UserEntity } from './user/entity/user.entity';
             database: process.env.DB_NAME,
             entities: [UserEntity],
             synchronize: process.env.ENV == 'development'
+        }),
+        MailerModule.forRoot({
+            transport: {
+                host: process.env.SMTP_DOMAIN,
+                port: Number(process.env.SMTP_PORT),
+                auth: {
+                    user: process.env.SMTP_USER,
+                    pass: process.env.SMTP_PASSWORD
+                }
+            },
+            defaults: {
+              from: `${process.env.APP_NAME} - ${process.env.SMTP_USER}`,
+            },
+            template: {
+                dir: __dirname + '/templates',
+                adapter: new PugAdapter(),
+                options: {
+                    strict: true,
+                },
+            },
         }),
         AuthModule
     ],

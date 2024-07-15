@@ -7,5 +7,7 @@ export declare class AuthController {
     constructor(authService: AuthService);
     login({ email, password }: AuthDTO): Promise<string>;
     create(authCreateDTO: AuthCreateDTO): Promise<string>;
-    resetPassword({ email }: AuthResetPasswordDTO): Promise<void>;
+    resetPassword({ email }: AuthResetPasswordDTO): Promise<{
+        success: boolean;
+    }>;
 }

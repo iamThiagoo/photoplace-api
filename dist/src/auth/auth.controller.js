@@ -30,7 +30,7 @@ let AuthController = class AuthController {
         return this.authService.create(name, email, password);
     }
     async resetPassword({ email }) {
-        return this.authService.resetPassword(email);
+        return this.authService.sendEmailToResetPassword(email);
     }
 };
 exports.AuthController = AuthController;
