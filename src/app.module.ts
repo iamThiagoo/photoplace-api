@@ -3,8 +3,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { AuthModule } from './auth/auth.module';
-import { UserEntity } from './user/entity/user.entity';
+import { AuthModule } from './resources/auth/auth.module';
+import { UserEntity } from './resources/user/entity/user.entity';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 
@@ -14,14 +14,14 @@ import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
             isGlobal: true
         }),
         TypeOrmModule.forRoot({
-            type: 'mysql',
+            type: 'postgres',
             host: process.env.DB_HOST,
             port: Number(process.env.DB_PORT),
             username: process.env.DB_USERNAME,
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME,
             entities: [UserEntity],
-            synchronize: process.env.ENV == 'development'
+            synchronize: false
         }),
         MailerModule.forRoot({
             transport: {
@@ -33,15 +33,15 @@ import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
                 }
             },
             defaults: {
-              from: `${process.env.APP_NAME} - ${process.env.SMTP_USER}`,
+                from: `${process.env.APP_NAME} - ${process.env.SMTP_USER}`
             },
             template: {
                 dir: __dirname + '/templates',
                 adapter: new PugAdapter(),
                 options: {
-                    strict: true,
-                },
-            },
+                    strict: true
+                }
+            }
         }),
         AuthModule
     ],
