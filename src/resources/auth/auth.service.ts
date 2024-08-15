@@ -25,12 +25,6 @@ export class AuthService {
         private usersRepository: Repository<UserEntity>
     ) {}
 
-    /**
-     *
-     * @param email
-     * @param password
-     * @returns
-     */
     async login(email: string, password: string) {
         const user = await this.usersRepository.findOneBy({ email });
 
@@ -41,19 +35,14 @@ export class AuthService {
         return this.createToken(user);
     }
 
-    /**
-     *
-     * @param name
-     * @param email
-     * @param password
-     * @returns
-     */
     async create(data: AuthCreateDTO) {
         if (
             await this.usersRepository.findOne({ where: { email: data.email } })
         ) {
             throw new BadRequestException('E-mail já vinculado!');
         }
+
+        console.log(data);
 
         const password = await bcrypt.hash(
             data.password,
@@ -70,10 +59,6 @@ export class AuthService {
         return this.createToken(user);
     }
 
-    /**
-     *
-     * @param email
-     */
     async sendEmailToResetPassword(email: string) {
         const user = await this.usersRepository.findOneBy({ email });
 
@@ -108,11 +93,6 @@ export class AuthService {
         };
     }
 
-    /**
-     *
-     * @param email
-     * @returns
-     */
     async resetPassword(token: string, newPassword: string) {
         try {
             const data: any = this.jwtService.verify(token, {
@@ -144,11 +124,6 @@ export class AuthService {
         }
     }
 
-    /**
-     *
-     * @param user
-     * @returns
-     */
     async createToken(user: UserEntity) {
         return this.jwtService.sign(
             {
@@ -164,11 +139,6 @@ export class AuthService {
         );
     }
 
-    /**
-     *
-     * @param token
-     * @returns
-     */
     async checkToken(token: string) {
         try {
             return this.jwtService.verify(token, {

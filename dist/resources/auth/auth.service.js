@@ -37,6 +37,7 @@ let AuthService = class AuthService {
         if (await this.usersRepository.findOne({ where: { email: data.email } })) {
             throw new common_1.BadRequestException('E-mail já vinculado!');
         }
+        console.log(data);
         const password = await bcrypt.hash(data.password, await bcrypt.genSalt());
         const user = this.usersRepository.create({
             name: data.name,
