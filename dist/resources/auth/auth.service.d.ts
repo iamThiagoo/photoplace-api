@@ -1,5 +1,5 @@
 import { JwtService } from '@nestjs/jwt';
-import { UserEntity } from 'src/resources/user/entity/user.entity';
+import { UserEntity } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { MailerService } from '@nestjs-modules/mailer';
 import { AuthCreateDTO } from './dto/auth-create.dto';

@@ -4,9 +4,10 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './resources/auth/auth.module';
-import { UserEntity } from './resources/user/entity/user.entity';
+import { UserEntity } from './entities/user.entity';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
+import { FilesModule } from './resources/files/files.modules';
 
 @Module({
     imports: [
@@ -43,7 +44,8 @@ import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
                 }
             }
         }),
-        AuthModule
+        AuthModule,
+        FilesModule
     ],
     controllers: [AppController],
     providers: [AppService]

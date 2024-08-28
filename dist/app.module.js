@@ -16,9 +16,10 @@ const app_service_1 = require("./app.service");
 const typeorm_1 = require("@nestjs/typeorm");
 const config_1 = require("@nestjs/config");
 const auth_module_1 = require("./resources/auth/auth.module");
-const user_entity_1 = require("./resources/user/entity/user.entity");
+const user_entity_1 = require("./entities/user.entity");
 const mailer_1 = require("@nestjs-modules/mailer");
 const pug_adapter_1 = require("@nestjs-modules/mailer/dist/adapters/pug.adapter");
+const files_modules_1 = require("./resources/files/files.modules");
 let AppModule = class AppModule {
     constructor() { }
 };
@@ -59,7 +60,8 @@ exports.AppModule = AppModule = __decorate([
                     }
                 }
             }),
-            auth_module_1.AuthModule
+            auth_module_1.AuthModule,
+            files_modules_1.FilesModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService]
