@@ -3,6 +3,7 @@ import { FolderFileEntity } from './folder-file.entity';
 export declare class FileEntity {
     uuid: string;
     fileName: string;
+    originalname: string;
     hash: string;
     fileType: string;
     fileSize: number;

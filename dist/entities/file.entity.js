@@ -21,23 +21,27 @@ __decorate([
     __metadata("design:type", String)
 ], FileEntity.prototype, "uuid", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ length: 255, nullable: true }),
+    (0, typeorm_1.Column)({ name: 'file_name', length: 255, nullable: true }),
     __metadata("design:type", String)
 ], FileEntity.prototype, "fileName", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ length: 255, nullable: true }),
+    __metadata("design:type", String)
+], FileEntity.prototype, "originalname", void 0);
 __decorate([
     (0, typeorm_1.Column)({ length: 255 }),
     __metadata("design:type", String)
 ], FileEntity.prototype, "hash", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ length: 50, nullable: true }),
+    (0, typeorm_1.Column)({ name: 'file_type', length: 50, nullable: true }),
     __metadata("design:type", String)
 ], FileEntity.prototype, "fileType", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'int', nullable: true }),
+    (0, typeorm_1.Column)({ name: 'file_size', type: 'int', nullable: true }),
     __metadata("design:type", Number)
 ], FileEntity.prototype, "fileSize", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ length: 255, nullable: true }),
+    (0, typeorm_1.Column)({ name: 'file_path', length: 255, nullable: true }),
     __metadata("design:type", String)
 ], FileEntity.prototype, "filePath", void 0);
 __decorate([
@@ -45,19 +49,19 @@ __decorate([
     __metadata("design:type", Boolean)
 ], FileEntity.prototype, "favorite", void 0);
 __decorate([
-    (0, typeorm_1.CreateDateColumn)({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' }),
+    (0, typeorm_1.CreateDateColumn)({ name: 'created_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' }),
     __metadata("design:type", Date)
 ], FileEntity.prototype, "createdAt", void 0);
 __decorate([
-    (0, typeorm_1.UpdateDateColumn)({ type: 'timestamp', nullable: true, default: () => 'CURRENT_TIMESTAMP' }),
+    (0, typeorm_1.UpdateDateColumn)({ name: 'uploaded_at', type: 'timestamp', nullable: true, default: () => 'CURRENT_TIMESTAMP' }),
     __metadata("design:type", Date)
 ], FileEntity.prototype, "uploadedAt", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'timestamp', nullable: true }),
+    (0, typeorm_1.Column)({ name: 'trashed_at', type: 'timestamp', nullable: true }),
     __metadata("design:type", Date)
 ], FileEntity.prototype, "trashedAt", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'uuid' }),
+    (0, typeorm_1.Column)({ name: 'user_id', type: 'uuid' }),
     __metadata("design:type", String)
 ], FileEntity.prototype, "userId", void 0);
 __decorate([

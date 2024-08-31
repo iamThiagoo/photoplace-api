@@ -34,7 +34,6 @@ let AuthService = class AuthService {
         return this.createToken(user);
     }
     async create(data) {
-        console.log(await this.usersRepository.findOne({ where: { email: data.email } }));
         if (await this.usersRepository.findOne({ where: { email: data.email } })) {
             throw new common_1.BadRequestException('E-mail já vinculado!');
         }

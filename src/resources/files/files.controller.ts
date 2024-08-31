@@ -3,10 +3,12 @@ import {
     Delete,
     Get,
     MaxFileSizeValidator,
+    Param,
     ParseFilePipe,
     Post,
     Put,
-    Query,
+    Req,
+    Res,
     UploadedFiles,
     UseGuards,
     UseInterceptors
@@ -47,9 +49,10 @@ export class FilesController {
                 ]
             })
         )
-        files: Array<Express.Multer.File>
+        files: Array<Express.Multer.File>,
+        @Req() req
     ) {
-        return this.filesService.upload(files);
+        return this.filesService.upload(files, req.user);
     }
 
 
@@ -57,8 +60,13 @@ export class FilesController {
      * Get's
      */
     @Get('/:uuid')
-    async get(@Query('file') hash : string) {
-        return this.filesService.getFileByHash(hash);
+    async getFile(@Param('uuid') uuid : string, @Res() res) {
+        return this.filesService.getFile(uuid, res);
+    }
+
+    @Get('/info/:uuid')
+    async getFileInfos(@Param('uuid') uuid : string) {
+        return this.filesService.getFileInfos(uuid);
     }
 
     
@@ -96,7 +104,7 @@ export class FilesController {
      * Delete's
      */
     @Delete('/:uuid')
-    async delete() {
-        //
+    async delete(@Param('uuid') uuid : string) {
+        return this.filesService.deleteFile(uuid);
     }
 }

@@ -23,11 +23,14 @@ let FilesController = class FilesController {
     constructor(filesService) {
         this.filesService = filesService;
     }
-    async create(files) {
-        return this.filesService.upload(files);
+    async create(files, req) {
+        return this.filesService.upload(files, req.user);
     }
-    async get(hash) {
-        return this.filesService.getFileByHash(hash);
+    async getFile(uuid, res) {
+        return this.filesService.getFile(uuid, res);
+    }
+    async getFileInfos(uuid) {
+        return this.filesService.getFileInfos(uuid);
     }
     async update() {
     }
@@ -39,7 +42,8 @@ let FilesController = class FilesController {
     }
     async unfavorite() {
     }
-    async delete() {
+    async delete(uuid) {
+        return this.filesService.deleteFile(uuid);
     }
 };
 exports.FilesController = FilesController;
@@ -61,17 +65,26 @@ __decorate([
             })
         ]
     }))),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Array]),
+    __metadata("design:paramtypes", [Array, Object]),
     __metadata("design:returntype", Promise)
 ], FilesController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)('/:uuid'),
-    __param(0, (0, common_1.Query)('file')),
+    __param(0, (0, common_1.Param)('uuid')),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], FilesController.prototype, "getFile", null);
+__decorate([
+    (0, common_1.Get)('/info/:uuid'),
+    __param(0, (0, common_1.Param)('uuid')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], FilesController.prototype, "get", null);
+], FilesController.prototype, "getFileInfos", null);
 __decorate([
     (0, common_1.Put)('/:uuid'),
     __metadata("design:type", Function),
@@ -104,8 +117,9 @@ __decorate([
 ], FilesController.prototype, "unfavorite", null);
 __decorate([
     (0, common_1.Delete)('/:uuid'),
+    __param(0, (0, common_1.Param)('uuid')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], FilesController.prototype, "delete", null);
 exports.FilesController = FilesController = __decorate([

@@ -6,7 +6,6 @@ import {
     ManyToOne,
     OneToMany,
     PrimaryGeneratedColumn,
-    Timestamp,
     UpdateDateColumn
 } from 'typeorm';
 import { UserEntity } from './user.entity';
@@ -17,34 +16,37 @@ export class FileEntity {
     @PrimaryGeneratedColumn('uuid')
     uuid: string;
   
-    @Column({length: 255, nullable: true })
+    @Column({name: 'file_name', length: 255, nullable: true })
     fileName: string;
+
+    @Column({length: 255, nullable: true })
+    originalname: string;
   
     @Column({length: 255 })
     hash: string;
   
-    @Column({length: 50, nullable: true })
+    @Column({name: 'file_type', length: 50, nullable: true })
     fileType: string;
   
-    @Column({ type: 'int', nullable: true })
+    @Column({name: 'file_size', type: 'int', nullable: true })
     fileSize: number;
   
-    @Column({length: 255, nullable: true })
+    @Column({name: 'file_path', length: 255, nullable: true })
     filePath: string;
   
     @Column({ type: 'boolean', default: false })
     favorite: boolean;
   
-    @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @CreateDateColumn({name: 'created_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;
   
-    @UpdateDateColumn({ type: 'timestamp', nullable: true, default: () => 'CURRENT_TIMESTAMP' })
+    @UpdateDateColumn({name: 'uploaded_at', type: 'timestamp', nullable: true, default: () => 'CURRENT_TIMESTAMP' })
     uploadedAt: Date;
   
-    @Column({ type: 'timestamp', nullable: true })
+    @Column({name: 'trashed_at', type: 'timestamp', nullable: true })
     trashedAt: Date;
   
-    @Column({ type: 'uuid' })
+    @Column({name: 'user_id', type: 'uuid' })
     userId: string;
   
     @ManyToOne(() => UserEntity, user => user.files)

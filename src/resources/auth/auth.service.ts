@@ -13,11 +13,7 @@ import { AuthCreateDTO } from './dto/auth-create.dto';
 
 @Injectable()
 export class AuthService {
-    /**
-     *
-     * @param jwtService
-     * @param usersRepository
-     */
+
     constructor(
         private readonly jwtService: JwtService,
         private readonly mailerService: MailerService,
@@ -25,7 +21,7 @@ export class AuthService {
         private usersRepository: Repository<UserEntity>
     ) {}
 
-    async login(email: string, password: string) {
+    async login(email: string, password: string) : Promise<string> {
         const user = await this.usersRepository.findOneBy({ email });
 
         if (!user || !(await bcrypt.compare(password, user.password))) {
@@ -35,9 +31,7 @@ export class AuthService {
         return this.createToken(user);
     }
 
-    async create(data: AuthCreateDTO) {
-
-        console.log(await this.usersRepository.findOne({ where: { email: data.email } }))
+    async create(data: AuthCreateDTO) : Promise<string> {
         if (await this.usersRepository.findOne({ where: { email: data.email } })) {
             throw new BadRequestException('E-mail já vinculado!');
         }
@@ -57,7 +51,7 @@ export class AuthService {
         return this.createToken(user);
     }
 
-    async sendEmailToResetPassword(email: string) {
+    async sendEmailToResetPassword(email: string) : Promise<{ success: boolean}> {
         const user = await this.usersRepository.findOneBy({ email });
 
         if (!user) {
@@ -91,7 +85,7 @@ export class AuthService {
         };
     }
 
-    async resetPassword(token: string, newPassword: string) {
+    async resetPassword(token: string, newPassword: string) : Promise<string> {
         try {
             const data: any = this.jwtService.verify(token, {
                 issuer: `${process.env.PROJECT_NAME} - Reset Password`,
@@ -122,7 +116,7 @@ export class AuthService {
         }
     }
 
-    async createToken(user: UserEntity) {
+    async createToken(user: UserEntity) : Promise<string> {
         return this.jwtService.sign(
             {
                 sub: user.uuid,
@@ -137,7 +131,7 @@ export class AuthService {
         );
     }
 
-    async checkToken(token: string) {
+    async checkToken(token: string) : Promise<any> {
         try {
             return this.jwtService.verify(token, {
                 audience: 'users',

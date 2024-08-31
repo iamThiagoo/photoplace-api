@@ -37,7 +37,7 @@ exports.AppModule = AppModule = __decorate([
                 username: process.env.DB_USERNAME,
                 password: process.env.DB_PASSWORD,
                 database: process.env.DB_NAME,
-                entities: [(0, path_1.join)(__dirname, '**', '*.entity.{js,ts}')],
+                entities: [(0, path_1.join)(__dirname, "**", "*.entity.{js,ts}")],
                 synchronize: false
             }),
             mailer_1.MailerModule.forRoot({
