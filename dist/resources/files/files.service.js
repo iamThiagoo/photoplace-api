@@ -14,7 +14,18 @@ const common_1 = require("@nestjs/common");
 let FilesService = class FilesService {
     constructor() { }
     async upload(files) {
-        console.log(files);
+        try {
+        }
+        catch (error) {
+            throw new common_1.BadRequestException(error);
+        }
+    }
+    async getFileByHash(uuid) {
+        try {
+        }
+        catch (error) {
+            throw new common_1.BadRequestException(error);
+        }
     }
 };
 exports.FilesService = FilesService;

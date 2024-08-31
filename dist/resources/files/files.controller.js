@@ -18,31 +18,42 @@ const passport_1 = require("@nestjs/passport");
 const files_service_1 = require("./files.service");
 const platform_express_1 = require("@nestjs/platform-express");
 const multer_1 = require("multer");
-const path_1 = require("path");
+const files_1 = require("../../util/helpers/files");
 let FilesController = class FilesController {
     constructor(filesService) {
         this.filesService = filesService;
     }
     async create(files) {
-        console.log(files);
+        return this.filesService.upload(files);
+    }
+    async get(hash) {
+        return this.filesService.getFileByHash(hash);
+    }
+    async update() {
+    }
+    async moveToTrash() {
+    }
+    async restore() {
+    }
+    async favorite() {
+    }
+    async unfavorite() {
+    }
+    async delete() {
     }
 };
 exports.FilesController = FilesController;
 __decorate([
-    (0, common_1.UseInterceptors)((0, platform_express_1.FilesInterceptor)('files', 100, {
+    (0, common_1.Post)(),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FilesInterceptor)('files', null, {
         storage: (0, multer_1.diskStorage)({
-            destination: '../../../uploads',
+            destination: '.files',
             filename: (_req, file, cb) => {
-                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-                cb(null, file.fieldname +
-                    '-' +
-                    uniqueSuffix +
-                    (0, path_1.extname)(file.originalname));
+                cb(null, (0, files_1.generateRandomFileName)(file.fieldname, file.originalname));
             }
         })
     })),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
-    (0, common_1.Post)('create'),
     __param(0, (0, common_1.UploadedFiles)(new common_1.ParseFilePipe({
         validators: [
             new common_1.MaxFileSizeValidator({
@@ -54,6 +65,49 @@ __decorate([
     __metadata("design:paramtypes", [Array]),
     __metadata("design:returntype", Promise)
 ], FilesController.prototype, "create", null);
+__decorate([
+    (0, common_1.Get)('/:uuid'),
+    __param(0, (0, common_1.Query)('file')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], FilesController.prototype, "get", null);
+__decorate([
+    (0, common_1.Put)('/:uuid'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], FilesController.prototype, "update", null);
+__decorate([
+    (0, common_1.Put)('/trash/:uuid'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], FilesController.prototype, "moveToTrash", null);
+__decorate([
+    (0, common_1.Put)('/restore/:uuid'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], FilesController.prototype, "restore", null);
+__decorate([
+    (0, common_1.Put)('/favorite/:uuid'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], FilesController.prototype, "favorite", null);
+__decorate([
+    (0, common_1.Put)('/unfavorite/:uuid'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], FilesController.prototype, "unfavorite", null);
+__decorate([
+    (0, common_1.Delete)('/:uuid'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], FilesController.prototype, "delete", null);
 exports.FilesController = FilesController = __decorate([
     (0, common_1.Controller)('files'),
     __metadata("design:paramtypes", [files_service_1.FilesService])

@@ -11,6 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserEntity = void 0;
 const typeorm_1 = require("typeorm");
+const folder_file_entity_1 = require("./folder-file.entity");
+const file_entity_1 = require("./file.entity");
 let UserEntity = class UserEntity {
 };
 exports.UserEntity = UserEntity;
@@ -34,6 +36,14 @@ __decorate([
     (0, typeorm_1.CreateDateColumn)({ name: 'created_at', type: 'timestamp' }),
     __metadata("design:type", typeorm_1.Timestamp)
 ], UserEntity.prototype, "createdAt", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => folder_file_entity_1.FolderFileEntity, folder => folder.file),
+    __metadata("design:type", Array)
+], UserEntity.prototype, "folders", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => file_entity_1.FileEntity, file => file.user),
+    __metadata("design:type", Array)
+], UserEntity.prototype, "files", void 0);
 exports.UserEntity = UserEntity = __decorate([
     (0, typeorm_1.Entity)('users')
 ], UserEntity);

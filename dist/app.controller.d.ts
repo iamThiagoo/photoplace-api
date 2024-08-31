@@ -3,5 +3,5 @@ export declare class AppController {
     private readonly appService;
     constructor(appService: AppService);
     sinpleTest(): string;
-    sinpleAuthTest(req: any): string;
+    simpleAuthTest(): string;
 }

@@ -1,4 +1,5 @@
 export declare class FilesService {
     constructor();
-    upload(files: any): Promise<void>;
+    upload(files: Array<Express.Multer.File>): Promise<void>;
+    getFileByHash(uuid: string): Promise<void>;
 }

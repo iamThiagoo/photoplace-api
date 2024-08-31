@@ -13,8 +13,7 @@ export class AppController {
 
     @UseGuards(AuthGuard)
     @Get('/auth-test')
-    sinpleAuthTest(@Request() req): string {
-        console.log(req.user);
+    simpleAuthTest(): string {
         return this.appService.getHello();
     }
 }

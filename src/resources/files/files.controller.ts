@@ -1,8 +1,12 @@
 import {
     Controller,
+    Delete,
+    Get,
     MaxFileSizeValidator,
     ParseFilePipe,
     Post,
+    Put,
+    Query,
     UploadedFiles,
     UseGuards,
     UseInterceptors
@@ -11,33 +15,30 @@ import { AuthGuard } from '@nestjs/passport';
 import { FilesService } from './files.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { generateRandomFileName } from 'src/util/helpers/files';
 
 @Controller('files')
 export class FilesController {
+    
     constructor(private readonly filesService: FilesService) {}
 
+    /**
+     * Post's
+     */
+    @Post()
+    @UseGuards(AuthGuard('jwt'))
     @UseInterceptors(
-        FilesInterceptor('files', 100, {
+        FilesInterceptor('files', null, {
             storage: diskStorage({
-                destination: '../../../uploads',
+                destination: '.files',
                 filename: (_req, file, cb) => {
-                    const uniqueSuffix =
-                        Date.now() + '-' + Math.round(Math.random() * 1e9);
-                    cb(
-                        null,
-                        file.fieldname +
-                            '-' +
-                            uniqueSuffix +
-                            extname(file.originalname)
-                    );
+                    cb(null, generateRandomFileName(file.fieldname, file.originalname));
                 }
             })
         })
     )
-    @UseGuards(AuthGuard('jwt'))
-    @Post('create')
-    async create(@UploadedFiles(
+    async create(
+        @UploadedFiles(
             new ParseFilePipe({
                 validators: [
                     new MaxFileSizeValidator({
@@ -48,6 +49,54 @@ export class FilesController {
         )
         files: Array<Express.Multer.File>
     ) {
-        console.log(files);
+        return this.filesService.upload(files);
+    }
+
+
+    /**
+     * Get's
+     */
+    @Get('/:uuid')
+    async get(@Query('file') hash : string) {
+        return this.filesService.getFileByHash(hash);
+    }
+
+    
+    /**
+     * Put's
+     */
+    @Put('/:uuid')
+    async update() {
+        //
+    }
+
+    @Put('/trash/:uuid')
+    async moveToTrash() {
+        //
+    }
+
+
+    @Put('/restore/:uuid')
+    async restore() {
+        //
+    }
+
+    @Put('/favorite/:uuid')
+    async favorite() {
+        //
+    }
+
+    @Put('/unfavorite/:uuid')
+    async unfavorite() {
+        //
+    }
+    
+
+    /**
+     * Delete's
+     */
+    @Delete('/:uuid')
+    async delete() {
+        //
     }
 }

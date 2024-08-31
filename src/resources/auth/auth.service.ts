@@ -36,13 +36,11 @@ export class AuthService {
     }
 
     async create(data: AuthCreateDTO) {
-        if (
-            await this.usersRepository.findOne({ where: { email: data.email } })
-        ) {
+
+        console.log(await this.usersRepository.findOne({ where: { email: data.email } }))
+        if (await this.usersRepository.findOne({ where: { email: data.email } })) {
             throw new BadRequestException('E-mail já vinculado!');
         }
-
-        console.log(data);
 
         const password = await bcrypt.hash(
             data.password,
