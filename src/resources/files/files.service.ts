@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Res } from '@nestjs/common';
+import { BadRequestException, Injectable, Res, UnauthorizedException } from '@nestjs/common';
 import { Response } from 'express';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FileEntity } from 'src/entities/file.entity';
@@ -7,6 +7,7 @@ import { generateHashByString } from 'src/util/helpers/files';
 import { Repository } from 'typeorm';
 import * as fs from 'fs';
 import { join } from 'path';
+import { FileUpdateDTO } from './dto/update-file.dto';
 
 @Injectable()
 export class FilesService {
@@ -65,9 +66,37 @@ export class FilesService {
         }
     }
 
-    async deleteFile(uuid : string) : Promise<{ success: boolean}> {
+    async updatePartial(data : FileUpdateDTO, userId : string) : Promise<{ success: boolean}> {
+        const file = await this.filesRepository.findOneByOrFail({uuid: data.uuid});
+
+        if (file.userId !== userId)
+            throw new UnauthorizedException('Você não pode atualizar o arquivo/pasta do amiguinho!');
+        
+        const fileUpdated : Partial<FileEntity> = {}
+        const currentTimestamp = new Date();
+
+        if (data.originalname) fileUpdated.originalname = data.originalname;
+        if (data.favorite) fileUpdated.favorite = true;
+        if (data.unfavorite) fileUpdated.favorite = false;
+        if (data.moveToTrash) fileUpdated.trashedAt = currentTimestamp;
+        if (data.restoreFromTrash) fileUpdated.trashedAt = null;
+        
+        fileUpdated.updatedAt = currentTimestamp;
+
+        await this.filesRepository.update(file.uuid, fileUpdated);
+        
+        return {
+            success: true
+        }
+    }
+
+    async deleteFile(uuid : string, user : IAuthUser) : Promise<{ success: boolean}> {
         try {
             const file = await this.filesRepository.findOneByOrFail({uuid});
+
+            if (file.userId !== user.id)
+                throw new UnauthorizedException('Você não pode deletar o arquivo/pasta do amiguinho!');
+
             await fs.promises.unlink(file.filePath);
             await this.filesRepository.delete(uuid);
 

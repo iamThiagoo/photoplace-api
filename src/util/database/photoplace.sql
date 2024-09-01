@@ -18,7 +18,7 @@ CREATE  TABLE "public".files (
 	file_path            varchar(255)    ,
 	favorite             boolean DEFAULT false   ,
 	created_at           timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL  ,
-	uploaded_at          timestamp DEFAULT CURRENT_TIMESTAMP   ,
+	updated_at          timestamp DEFAULT CURRENT_TIMESTAMP   ,
 	trashed_at           timestamp    ,
 	user_id              uuid  NOT NULL  ,
 	CONSTRAINT files_pkey PRIMARY KEY ( uuid )
@@ -33,7 +33,7 @@ CREATE  TABLE "public".folders (
 	parent_folder_uuid   uuid    ,
 	user_id              uuid    ,
 	created_at           timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL  ,
-	uploaded_at          timestamp DEFAULT CURRENT_TIMESTAMP   ,
+	updated_at          timestamp DEFAULT CURRENT_TIMESTAMP   ,
 	trashed_at           timestamp    ,
 	CONSTRAINT folders_pkey PRIMARY KEY ( uuid )
  );

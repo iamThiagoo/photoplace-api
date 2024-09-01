@@ -1,4 +1,5 @@
 import {
+    Body,
     Controller,
     Delete,
     Get,
@@ -18,6 +19,7 @@ import { FilesService } from './files.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { generateRandomFileName } from 'src/util/helpers/files';
+import { FileUpdateDTO } from './dto/update-file.dto';
 
 @Controller('files')
 export class FilesController {
@@ -74,29 +76,8 @@ export class FilesController {
      * Put's
      */
     @Put('/:uuid')
-    async update() {
-        //
-    }
-
-    @Put('/trash/:uuid')
-    async moveToTrash() {
-        //
-    }
-
-
-    @Put('/restore/:uuid')
-    async restore() {
-        //
-    }
-
-    @Put('/favorite/:uuid')
-    async favorite() {
-        //
-    }
-
-    @Put('/unfavorite/:uuid')
-    async unfavorite() {
-        //
+    async update(@Body() data : FileUpdateDTO, @Req() req) {
+        return this.filesService.updatePartial(data, req.user);
     }
     
 
@@ -104,7 +85,7 @@ export class FilesController {
      * Delete's
      */
     @Delete('/:uuid')
-    async delete(@Param('uuid') uuid : string) {
-        return this.filesService.deleteFile(uuid);
+    async delete(@Param('uuid') uuid : string, @Req() req) {
+        return this.filesService.deleteFile(uuid, req.user);
     }
 }

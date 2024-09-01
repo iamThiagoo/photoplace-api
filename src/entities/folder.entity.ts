@@ -49,7 +49,7 @@ export class FolderEntity {
   createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamp', nullable: true, default: () => 'CURRENT_TIMESTAMP' })
-  uploadedAt: Date;
+  updatedAt: Date;
 
   @Column({ type: 'timestamp', nullable: true })
   trashedAt: Date;

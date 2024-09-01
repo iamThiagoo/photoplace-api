@@ -40,8 +40,8 @@ export class FileEntity {
     @CreateDateColumn({name: 'created_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;
   
-    @UpdateDateColumn({name: 'uploaded_at', type: 'timestamp', nullable: true, default: () => 'CURRENT_TIMESTAMP' })
-    uploadedAt: Date;
+    @UpdateDateColumn({name: 'updated_at', type: 'timestamp', nullable: true, default: () => 'CURRENT_TIMESTAMP' })
+    updatedAt: Date;
   
     @Column({name: 'trashed_at', type: 'timestamp', nullable: true })
     trashedAt: Date;
